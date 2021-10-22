@@ -66,6 +66,7 @@ if __name__ == '__main__':
     file_list = path_handle()
     print(f'共有{len(file_list)}个文件需要转换')
     if len(file_list)!=0:
-        os.mkdir(os.path.join(BASE_PATH,'转换后'))
+        if not os.path.exists(os.path.join(BASE_PATH,'转换后')):
+            os.mkdir(os.path.join(BASE_PATH,'转换后'))
         for i in file_list:
             docx_format_01(i)
