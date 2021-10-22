@@ -4,7 +4,7 @@ from docx import Document
 from docx.oxml.ns import qn
 from docx.shared import Pt, Cm
 from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
-from docx.enum.section import WD_ORIENTATION
+import pypandoc
 
 NEW_FILE_LIST = []  # 临时文件列表
 BASE_PATH = os.getcwd()  # 当前文件目录
@@ -13,13 +13,11 @@ BASE_PATH = os.getcwd()  # 当前文件目录
 def doc_docx(old_path):
     """单个.doc文件转换为.docx文件"""
     # 我们首先调用win32com模块并打开word应用软件，执行程序：
-    word = client.Dispatch("Word.Application")
-    doc = word.Documents.Open(old_path)
+
     new_path = old_path.split('.', 1)[0] + '.docx'
-    print('创建临时文件', new_path)
-    doc.SaveAs(new_path, 16)  # 数字16表示将.doc文件另存为.docx格式文件
-    doc.Close()
-    word.Quit()
+    print('创建临时文件',new_path)
+    pypandoc.convert_file(old_path, 'doc', outputfile=new_path)
+
     return new_path
 
 
@@ -63,7 +61,7 @@ def docx_format_01(file_path):
         if len(i.text) == 0 or i.text.isspace():
             continue
         if i.alignment == WD_PARAGRAPH_ALIGNMENT.CENTER:  # 居中的按标题算
-
+            print(i.text,'居中')
             # 首行处理（标题行）
             # 居中 不缩进
             p = new_docx.add_paragraph('')
@@ -84,6 +82,8 @@ def docx_format_01(file_path):
             for r in i.runs:
                 new_r = new_p.add_run(r.text)
                 new_r.font.bold = r.font.bold
+
+
 
     # 保存
     now_file_dir = os.path.join(BASE_PATH, '转换后')
